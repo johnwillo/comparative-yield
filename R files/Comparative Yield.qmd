@@ -1,0 +1,249 @@
+---
+title: "Comparative yield estimates and confidence intervals"
+author: "John Willoughby"
+date: "December 21, 2023"
+format: 
+  html:
+    embed-resources: true
+editor: visual
+bibliography: references.bib
+csl: "C:/Users/johnw/Zotero/styles/elsevier-harvard.csl"
+---
+
+# Introduction
+
+This file uses the comparative yield method to calculate a regression estimate of yield in grams/quadrat and converts this estimate to kg/ha and lb/acre. It also calculates a confidence interval (at a confidence level specified by the user) for estimates in grams/quadrat, kg/ha, and lb/acre.
+
+The comparative yield method was originally developed by @haydock1975. The R code below is based on the equations given in @despain1997.
+
+The comparative yield method is similar to double-sampling techniques that have been used for estimating the biomass of rangelands at least since @pechanec1937. Double sampling is effective when values for the variable of interest are hard or expensive to collect, but values for an auxiliary variable are easier and cheaper to collect. For biomass double sampling, herbage weights in a large sample of quadrats are visually estimated. A relatively small subsample of quadrats from this larger sample of visually estimated quadrats are clipped and weighed. The relationship between the visual estimates and the actual weights of the clipped subsample of quadrats is then used to adjust the estimate for the larger sample of visually estimated quadrats. If there is a good positive relationship between the auxiliary variable (the weight estimates) and the variable of interest (the actual weights), double sampling can greatly increase the precision of the overall estimate. This traditional double-sampling procedure differs from the comparative yield method in two major ways:
+
+1.  In the traditional double-sampling method direct estimates of weights are made in each quadrat, as opposed to only having to assign the quadrat to one of five ranks (or intermediates between these ranks) in the comparative yield method.
+
+2.  In the traditional double-sampling procedure the subsample of quadrats to be both estimated and clipped is chosen randomly, whereas in the comparative yield method the quadrats to be ranked and clipped are chosen subjectively to provide a set of values for each of the five ranks.
+
+Chapter 4 of @despain1997, written by Despain and Smith, describes the comparative yield method for estimating range productivity. Two estimators are given, a ratio estimator and a regression estimator. The authors recommend use of the regression estimator to estimate yield and to calculate confidence intervals around the estimate, a view shared by @ahmed1983, who found that regression estimation provided better results than ratio estimation even when assumptions of homoscedasticity were violated. The regression estimator is used here.
+
+# Equations
+
+The regression estimate of mean yield/quadrat is given by Equation 1 below.
+
+$$
+{{\bar Y}_e} = {{\bar Y}_h} + b\left( {{{\bar X}_e} - {{\bar X}_h}} \right)
+$$ {#eq-1}
+
+$$
+\begin{array}{l}
+{\rm{Where:}}\\{{\bar Y}_e} = {\rm{ estimated \:average\: weight/quadrat\: for \:sample}}\\{{\bar Y}_h} = {\rm{ mean\: weight\: of \:harvested\: quadrats}}\\b = {\rm{  slope\: of \:regression \:of \:ranks \:on \:weight \:for \:harvested \:quadrats\:(Equation \:2)}}\\{{\bar X}_e} = {\rm{ mean \:of\: estimated \:ranks}}\\{{\bar X}_h} = {\rm{ mean \:of \: harvested\: ranks}}\end{array}
+$$
+
+The slope, b, needed for Equation 1 is given by Equation 2 below.
+
+$$
+b = \frac{{\sum {{X_h}{Y_h} - \frac{{\sum {{X_h}\sum {{Y_h}} } }}{n}} }}{{\sum {X_h^2 - \frac{{{{\left( {\sum {{X_h}} } \right)}^2}}}{n}} }}
+$$ {#eq-2}
+
+A confidence interval around the estimated mean weight/quadrat from the sample is calculated by Equation 3 below.
+
+$$
+C.I. = {t_p}\sqrt {S_{\bar Ye}^2} 
+$$ {#eq-3}
+
+${S_{\bar Ye}^2}$ is calculated using Equation 4 below.
+
+$$
+S_{\bar Ye}^2 = S_{y \cdot x}^2\left\{ {\frac{1}{n} + \frac{{{{\left( {{{\bar X}_e} - {{\bar X}_h}} \right)}^2}}}{{\sum {X_h^2 - \frac{{{{\left( {\sum {{X_h}} } \right)}^2}}}{n}} }}} \right\} + \frac{{{b^2}S_{\bar Xe}^2}}{m}
+$$ {#eq-4}
+
+The b in the equation for ${S_{\bar Ye}^2}$ is the slope calculated using Equation 2, above. The terms $S_{y \cdot x}^2$ and ${S_{\bar Xe}^2}$ are calculated by equations 5 and 6 below, respectively.
+
+$$
+S_{y \cdot x}^2 = \frac{{\left[ {\sum {Y_h^2 - \frac{{(\sum {{Y_h}{)^2}} }}{n}} } \right] - {b^2}\left[ {\sum {X_h^2 - \frac{{{{\left( {\sum {{X_h}} } \right)}^2}}}{n}} } \right]}}{{n - 2}}
+$$ {#eq-5}
+
+$$
+S_{\bar Xe}^2 = \frac{{\sum {X_e^2 - \frac{{{{\left( {\sum {{X_e}} } \right)}^2}}}{m}} }}{{m - 1}}
+$$ {#eq-6}
+
+The other terms in the above equations are as follows:
+
+```{=tex}
+\begin{array}{l}
+{{\bar Y}_e} = {\rm{ estimated\: average\: weight/quadrat \:for \:sample}}\\
+b = {\rm{ slope\: of \:regression \:of \:weights \:on \:ranks\: for harvested \:quadrats}}\\
+{X_e} = {\rm{ individual \:ranks \:of \:main \:sample \:quadrats}}\\
+{X_h} = {\rm{ individual \:ranks \:of \:harvested \:quadrats}}\\
+{Y_h} = {\rm{ \:individual \:weights \:of \:harvested \:quadrats}}\\
+m = {\rm{ number \:of main \:sample \:quadrats}}\\
+n = {\rm{ number \:of \:harvested \:quadrats}}\\
+{t_p} = {\rm{ Student's \:t \:value \:at \:probability \:level \:p \:for \:m  \textendash 1 \:degrees \:of \:freedom \:(two\textendash tailed)}}
+\end{array}
+```
+::: callout-note
+Equation 6 is simply the variance of the ranks of estimated quadrats. The denominator of the second term inside the braces of Equation 4 and in the second bracketed term of Equation 5 is the numerator of the variance of the ranks of the harvested quadrats; this can be calculated in R by multiplying the variance of the harvested quadrat ranks by n-1. The first bracketed term in the numerator of Equation 5 is the numerator of the variance of the weights of the harvested quadrats; this value can be calculated by multiplying the variance of the harvested weights by n-1. We make use of these relationships in the R code below.
+:::
+
+
+# Code for calculating the estimate and confidence interval
+
+Data must be in two separate csv files. One of these files consists only of the estimated ranks for each sampled quadrat. The other consists of the ranks of the harvested quadrats in one column and their corresponding harvested weights (in grams) in another column. Both files can also have a column with quadrat numbers but that column is not used in the calculations.
+
+Load needed packages
+
+```{r message = FALSE}
+library(tidyverse) # To use read_csv() and ggplot
+library(ggthemes) # To use theme_few() in ggplot
+library(ggpmisc) # To use stat_poly_eq() to add R-squared and formula to plot
+library(here) # To find the data files in the "data" subdirectory of the project directory.
+```
+
+Load data files
+
+```{r message = FALSE}
+est_ranks = read_csv(here("data/estimated ranks.csv"))
+harvested = read_csv(here("data/harvested ranks and weights.csv"))
+```
+
+Specify confidence level desired
+
+```{r}
+conf.level = .95
+```
+
+## Review the regression of weights on ranks of harvested quadrats
+
+For the regression estimator to work well the regression line should do a good job of describing the relationship between the estimated ranks and actual weights of the harvested quadrats. There should be a linear relationship because one of the assumptions of linear regression is linearity. Ideally the regression line would pass through the origin, but this is not really necessary unless there are a lot of quadrats with a rank of 0, which is unlikely in most cases. Also, the closer the R-squared value is to 1 the better.
+
+Graph of the regression.
+
+```{r}
+ggplot(harvested, aes(x = rank, y = weight)) +
+  theme_few(base_size = 14) +
+  geom_point(size = 3) +
+  expand_limits(x = c(0,5)) +
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) +
+  stat_poly_eq(use_label("eq"), size = 5) +
+  stat_poly_eq(label.y = 0.9, rr.digits = 3, size = 5) +
+  xlab("Rank") +
+  ylab("Weight (g)") +
+  ggtitle("Regression of weight on ranks of harvested quadrats")
+```
+
+
+## Calculate estimated weight/quadrat and its confidence interval using the equations above.
+
+Sample sizes (this self-calculates from the data files)
+
+```{r}
+(m = length(na.omit(est_ranks$est_rank)))
+(n = length(na.omit(harvested$rank)))
+```
+
+Perform regression of weights on ranks of harvested quadrats and pull out the slope from the model for use in the necessary calculations.
+
+```{r}
+# Regression
+model = lm(weight ~ rank, data = harvested)
+
+# Pull out slope from model
+b = unname(model$coefficients[2])
+```
+
+Estimate sample mean weights
+
+```{r}
+est_weight = mean(harvested$weight) +
+  b*(mean(est_ranks$est_rank) - mean(harvested$rank))
+est_weight
+```
+ Calculate the confidence interval
+ 
+```{r}
+var.Xbar.e = var(est_ranks$est_rank)
+
+var.y.x = ((var(harvested$weight)*(n - 1) -
+  (b^2 * (var(harvested$rank) * (n - 1))))/(n-2))
+
+var.ybar.e = (var.y.x*(1/n +
+      (mean(est_ranks$est_rank) - mean(harvested$rank))^2/
+        (var(harvested$rank) * ((n -1))))) +
+  ((b^2 * var.Xbar.e)/m)
+  
+est_CI = qt((1-conf.level)/2, df = m-1, lower.tail = FALSE) * sqrt(var.ybar.e) 
+est_CI
+```
+ 
+Print the results
+```{r}
+cat(paste0("The estimated weight is ",
+   est_weight," g/quadrat" , 
+   "with a ",conf.level*100,
+   "% confidence interval of \n+/- ",
+   round(est_CI, 3), " g/quadrat"))
+```
+
+## Convert estimated quadrat weight to larger area
+
+Specify quadrat size in square meters. Note that even if you use a quadrat with measurements in inches or feet, you need to convert the area to square meters. For example, if your quadrat size is 24 inches by 24 inches (576 square inches) you would enter the value for quad_size_m2 as 0.3716, the size of the quadrat area in square meters. The example data here were collected using a quadrat size of 40 cm x 40 cm, which has an area of 0.16 square meters.
+
+```{r}
+quad_size_m2 = 0.16
+
+```
+
+### Convert to kilograms/hectare
+
+```{r}
+# Number of quadrats of quad_size_cm2 in one hectare. Obtained by dividing the 
+# number of square meters in a hectare by the size (in square meters) of the quadrat:
+num_quads_ha = 10000/quad_size_m2
+
+# There are 1000 grams in 1 kilogram. The conversion factor to convert the 
+# grams/quadrat value to kg/ha is derived by dividing the number of quadrats/ha 
+# by 1000 kg/ha:
+conversion_factor_g_ha = num_quads_ha/1000
+
+(est_weight_kg_ha = est_weight * conversion_factor_g_ha)
+(est_CI_kg_ha = est_CI * conversion_factor_g_ha)
+
+cat(paste0("The estimated weight is ",
+   round(est_weight_kg_ha, 0)," kg/ha" , 
+   " with a ", conf.level*100,
+   "% confidence interval of \n+/- ",
+   round(est_CI_kg_ha, 0), " kg/ha"))
+
+```
+
+### Convert to pounds/acre
+
+```{r}
+
+```
+
+
+```{r}
+# Number of quadrats of quad_size_m2 in one acre. Obtained by dividing the 
+# number of square meters in an acre by the size (in square meters) of the quadrat:
+num_quads_acre = 4046.82525/quad_size_m2
+
+# There are 453.59237 grams in 1 pound. 
+grams_lb = 453.59237
+
+# The conversion factor to convert the grams/quadrat value to lb/ac is derived by 
+# dividing the number of quadrats/acre by the number of grams/pound:
+conversion_factor_lb_ac = num_quads_acre/grams_lb
+
+# We then calculate the estimated weight and confidence interval on a kg/ha basis
+# by multiplying the estimated weight and confidence interval expressed in grams/quadrat 
+# by the conversion factor:
+(est_weight_lb_ac = est_weight * conversion_factor_lb_ac)
+(est_CI_lb_ac = est_CI * conversion_factor_lb_ac)
+
+cat(paste0("The estimated weight is ",
+   round(est_weight_lb_ac, 0)," lb/acre" , 
+   " with a ", conf.level*100,
+   "% confidence interval of \n+/- ",
+   round(est_CI_lb_ac, 0), " lb/acre"))
+
+```
+
