@@ -100,14 +100,14 @@ library(here) # To find the data files in the "data" subdirectory of the project
 Load data files
 
 ```{r message = FALSE}
-est_ranks = read_csv(here("data/estimated ranks.csv"))
-harvested = read_csv(here("data/harvested ranks and weights.csv"))
+est_ranks  <-  read_csv(here("data/estimated ranks.csv"))
+harvested  <-  read_csv(here("data/harvested ranks and weights.csv"))
 ```
 
 Specify confidence level desired
 
 ```{r}
-conf.level = .95
+conf.level  <-  .95
 ```
 
 ## Review the regression of weights on ranks of harvested quadrats
@@ -135,41 +135,41 @@ ggplot(harvested, aes(x = rank, y = weight)) +
 Sample sizes (this self-calculates from the data files)
 
 ```{r}
-(m = length(na.omit(est_ranks$est_rank)))
-(n = length(na.omit(harvested$rank)))
+(m  <-  length(na.omit(est_ranks$est_rank)))
+(n  <-  length(na.omit(harvested$rank)))
 ```
 
 Perform regression of weights on ranks of harvested quadrats and pull out the slope from the model for use in the necessary calculations.
 
 ```{r}
 # Regression
-model = lm(weight ~ rank, data = harvested)
+model  <-  lm(weight ~ rank, data = harvested)
 
 # Pull out slope from model
-b = unname(model$coefficients[2])
+b  <-  unname(model$coefficients[2])
 ```
 
 Estimate sample mean weights
 
 ```{r}
-est_weight = mean(harvested$weight) +
+est_weight  <-  mean(harvested$weight) +
   b*(mean(est_ranks$est_rank) - mean(harvested$rank))
 est_weight
 ```
  Calculate the confidence interval
  
 ```{r}
-var.Xbar.e = var(est_ranks$est_rank)
+var.Xbar.e  <-  var(est_ranks$est_rank)
 
-var.y.x = ((var(harvested$weight)*(n - 1) -
-  (b^2 * (var(harvested$rank) * (n - 1))))/(n-2))
+var.y.x  <-  ((var(harvested$weight)*(n - 1) -
+  (b^2 * (var(harvested$rank) * (n - 1))))/(n - 2))
 
-var.ybar.e = (var.y.x*(1/n +
-      (mean(est_ranks$est_rank) - mean(harvested$rank))^2/
-        (var(harvested$rank) * ((n -1))))) +
+var.ybar.e  <-  (var.y.x*(1/n +
+      (mean(est_ranks$est_rank) - mean(harvested$rank))^2 / 
+        (var(harvested$rank) * ((n - 1))))) +
   ((b^2 * var.Xbar.e)/m)
   
-est_CI = qt((1-conf.level)/2, df = m-1, lower.tail = FALSE) * sqrt(var.ybar.e) 
+est_CI  <-  qt((1-conf.level)/2, df = m - 1, lower.tail = FALSE) * sqrt(var.ybar.e) 
 est_CI
 ```
  
@@ -187,7 +187,7 @@ cat(paste0("The estimated weight is ",
 Specify quadrat size in square meters. Note that even if you use a quadrat with measurements in inches or feet, you need to convert the area to square meters. For example, if your quadrat size is 24 inches by 24 inches (576 square inches) you would enter the value for quad_size_m2 as 0.3716, the size of the quadrat area in square meters. The example data here were collected using a quadrat size of 40 cm x 40 cm, which has an area of 0.16 square meters.
 
 ```{r}
-quad_size_m2 = 0.16
+quad_size_m2  <-  0.16
 
 ```
 
@@ -196,15 +196,15 @@ quad_size_m2 = 0.16
 ```{r}
 # Number of quadrats of quad_size_cm2 in one hectare. Obtained by dividing the 
 # number of square meters in a hectare by the size (in square meters) of the quadrat:
-num_quads_ha = 10000/quad_size_m2
+num_quads_ha  <-  10000/quad_size_m2
 
 # There are 1000 grams in 1 kilogram. The conversion factor to convert the 
 # grams/quadrat value to kg/ha is derived by dividing the number of quadrats/ha 
 # by 1000 kg/ha:
-conversion_factor_g_ha = num_quads_ha/1000
+conversion_factor_g_ha  <-  num_quads_ha/1000
 
-(est_weight_kg_ha = est_weight * conversion_factor_g_ha)
-(est_CI_kg_ha = est_CI * conversion_factor_g_ha)
+(est_weight_kg_ha  <-  est_weight * conversion_factor_g_ha)
+(est_CI_kg_ha  <-  est_CI * conversion_factor_g_ha)
 
 cat(paste0("The estimated weight is ",
    round(est_weight_kg_ha, 0)," kg/ha" , 
@@ -216,28 +216,24 @@ cat(paste0("The estimated weight is ",
 
 ### Convert to pounds/acre
 
-```{r}
-
-```
-
 
 ```{r}
 # Number of quadrats of quad_size_m2 in one acre. Obtained by dividing the 
 # number of square meters in an acre by the size (in square meters) of the quadrat:
-num_quads_acre = 4046.82525/quad_size_m2
+num_quads_acre  <-  4046.82525/quad_size_m2
 
 # There are 453.59237 grams in 1 pound. 
-grams_lb = 453.59237
+grams_lb  <-  453.59237
 
 # The conversion factor to convert the grams/quadrat value to lb/ac is derived by 
 # dividing the number of quadrats/acre by the number of grams/pound:
-conversion_factor_lb_ac = num_quads_acre/grams_lb
+conversion_factor_lb_ac  <-  num_quads_acre/grams_lb
 
 # We then calculate the estimated weight and confidence interval on a kg/ha basis
 # by multiplying the estimated weight and confidence interval expressed in grams/quadrat 
 # by the conversion factor:
-(est_weight_lb_ac = est_weight * conversion_factor_lb_ac)
-(est_CI_lb_ac = est_CI * conversion_factor_lb_ac)
+(est_weight_lb_ac  <-  est_weight * conversion_factor_lb_ac)
+(est_CI_lb_ac  <-  est_CI * conversion_factor_lb_ac)
 
 cat(paste0("The estimated weight is ",
    round(est_weight_lb_ac, 0)," lb/acre" , 

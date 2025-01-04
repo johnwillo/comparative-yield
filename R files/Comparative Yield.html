@@ -3084,7 +3084,7 @@ vertical-align: -.125em;
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>This file uses the comparative yield method to calculate a regression estimate of yield in grams/quadrat and converts this estimate to kg/ha and lb/acre. It also calculates a confidence interval (at a confidence interval specified by the user) for estimates in grams/quadrat, kg/ha, and lb/acre.</p>
+<p>This file uses the comparative yield method to calculate a regression estimate of yield in grams/quadrat and converts this estimate to kg/ha and lb/acre. It also calculates a confidence interval (at a confidence level specified by the user) for estimates in grams/quadrat, kg/ha, and lb/acre.</p>
 <p>The comparative yield method was originally developed by <span class="citation" data-cites="haydock1975">Haydock and Shaw (<a href="#ref-haydock1975" role="doc-biblioref">1975</a>)</span>. The R code below is based on the equations given in <span class="citation" data-cites="despain1997">Despain et al. (<a href="#ref-despain1997" role="doc-biblioref">1997</a>)</span>.</p>
 <p>The comparative yield method is similar to double-sampling techniques that have been used for estimating the biomass of rangelands at least since <span class="citation" data-cites="pechanec1937">Pechanec and Pickford (<a href="#ref-pechanec1937" role="doc-biblioref">1937</a>)</span>. Double sampling is effective when values for the variable of interest are hard or expensive to collect, but values for an auxiliary variable are easier and cheaper to collect. For biomass double sampling, herbage weights in a large sample of quadrats are visually estimated. A relatively small subsample of quadrats from this larger sample of visually estimated quadrats are clipped and weighed. The relationship between the visual estimates and the actual weights of the clipped subsample of quadrats is then used to adjust the estimate for the larger sample of visually estimated quadrats. If there is a good positive relationship between the auxiliary variable (the weight estimates) and the variable of interest (the actual weights), double sampling can greatly increase the precision of the overall estimate. This traditional double-sampling procedure differs from the comparative yield method in two major ways:</p>
 <ol type="1">
@@ -3159,12 +3159,12 @@ Note
 </div>
 <p>Load data files</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>est_ranks <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data/estimated ranks.csv&quot;</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>harvested <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data/harvested ranks and weights.csv&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>est_ranks  <span class="ot">&lt;-</span>  <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data/estimated ranks.csv&quot;</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>harvested  <span class="ot">&lt;-</span>  <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data/harvested ranks and weights.csv&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Specify confidence level desired</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>conf.level <span class="ot">=</span> .<span class="dv">95</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>conf.level  <span class="ot">&lt;-</span>  .<span class="dv">95</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="review-the-regression-of-weights-on-ranks-of-harvested-quadrats" class="level2">
 <h2 class="anchored" data-anchor-id="review-the-regression-of-weights-on-ranks-of-harvested-quadrats">Review the regression of weights on ranks of harvested quadrats</h2>
@@ -3193,11 +3193,11 @@ Note
 <h2 class="anchored" data-anchor-id="calculate-estimated-weightquadrat-and-its-confidence-interval-using-the-equations-above.">Calculate estimated weight/quadrat and its confidence interval using the equations above.</h2>
 <p>Sample sizes (this self-calculates from the data files)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">m =</span> <span class="fu">length</span>(<span class="fu">na.omit</span>(est_ranks<span class="sc">$</span>est_rank)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(m  <span class="ot">&lt;-</span>  <span class="fu">length</span>(<span class="fu">na.omit</span>(est_ranks<span class="sc">$</span>est_rank)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 25</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">n =</span> <span class="fu">length</span>(<span class="fu">na.omit</span>(harvested<span class="sc">$</span>rank)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(n  <span class="ot">&lt;-</span>  <span class="fu">length</span>(<span class="fu">na.omit</span>(harvested<span class="sc">$</span>rank)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 5</code></pre>
 </div>
@@ -3205,14 +3205,14 @@ Note
 <p>Perform regression of weights on ranks of harvested quadrats and pull out the slope from the model for use in the necessary calculations.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Regression</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">=</span> <span class="fu">lm</span>(weight <span class="sc">~</span> rank, <span class="at">data =</span> harvested)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>model  <span class="ot">&lt;-</span>  <span class="fu">lm</span>(weight <span class="sc">~</span> rank, <span class="at">data =</span> harvested)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull out slope from model</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="fu">unname</span>(model<span class="sc">$</span>coefficients[<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>b  <span class="ot">&lt;-</span>  <span class="fu">unname</span>(model<span class="sc">$</span>coefficients[<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Estimate sample mean weights</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>est_weight <span class="ot">=</span> <span class="fu">mean</span>(harvested<span class="sc">$</span>weight) <span class="sc">+</span></span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>est_weight  <span class="ot">&lt;-</span>  <span class="fu">mean</span>(harvested<span class="sc">$</span>weight) <span class="sc">+</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  b<span class="sc">*</span>(<span class="fu">mean</span>(est_ranks<span class="sc">$</span>est_rank) <span class="sc">-</span> <span class="fu">mean</span>(harvested<span class="sc">$</span>rank))</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>est_weight</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3221,17 +3221,17 @@ Note
 </div>
 <p>Calculate the confidence interval</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>var.Xbar.e <span class="ot">=</span> <span class="fu">var</span>(est_ranks<span class="sc">$</span>est_rank)</span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>var.Xbar.e  <span class="ot">&lt;-</span>  <span class="fu">var</span>(est_ranks<span class="sc">$</span>est_rank)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>var.y.x <span class="ot">=</span> ((<span class="fu">var</span>(harvested<span class="sc">$</span>weight)<span class="sc">*</span>(n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">-</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  (b<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> (<span class="fu">var</span>(harvested<span class="sc">$</span>rank) <span class="sc">*</span> (n <span class="sc">-</span> <span class="dv">1</span>))))<span class="sc">/</span>(n<span class="dv">-2</span>))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>var.y.x  <span class="ot">&lt;-</span>  ((<span class="fu">var</span>(harvested<span class="sc">$</span>weight)<span class="sc">*</span>(n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">-</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  (b<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> (<span class="fu">var</span>(harvested<span class="sc">$</span>rank) <span class="sc">*</span> (n <span class="sc">-</span> <span class="dv">1</span>))))<span class="sc">/</span>(n <span class="sc">-</span> <span class="dv">2</span>))</span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>var.ybar.e <span class="ot">=</span> (var.y.x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>n <span class="sc">+</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>      (<span class="fu">mean</span>(est_ranks<span class="sc">$</span>est_rank) <span class="sc">-</span> <span class="fu">mean</span>(harvested<span class="sc">$</span>rank))<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        (<span class="fu">var</span>(harvested<span class="sc">$</span>rank) <span class="sc">*</span> ((n <span class="sc">-</span><span class="dv">1</span>))))) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>var.ybar.e  <span class="ot">&lt;-</span>  (var.y.x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>n <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>      (<span class="fu">mean</span>(est_ranks<span class="sc">$</span>est_rank) <span class="sc">-</span> <span class="fu">mean</span>(harvested<span class="sc">$</span>rank))<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        (<span class="fu">var</span>(harvested<span class="sc">$</span>rank) <span class="sc">*</span> ((n <span class="sc">-</span> <span class="dv">1</span>))))) <span class="sc">+</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  ((b<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> var.Xbar.e)<span class="sc">/</span>m)</span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>est_CI <span class="ot">=</span> <span class="fu">qt</span>((<span class="dv">1</span><span class="sc">-</span>conf.level)<span class="sc">/</span><span class="dv">2</span>, <span class="at">df =</span> m<span class="dv">-1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(var.ybar.e) </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>est_CI  <span class="ot">&lt;-</span>  <span class="fu">qt</span>((<span class="dv">1</span><span class="sc">-</span>conf.level)<span class="sc">/</span><span class="dv">2</span>, <span class="at">df =</span> m <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(var.ybar.e) </span>
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>est_CI</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 8.482275</code></pre>
@@ -3254,25 +3254,25 @@ Note
 <h2 class="anchored" data-anchor-id="convert-estimated-quadrat-weight-to-larger-area">Convert estimated quadrat weight to larger area</h2>
 <p>Specify quadrat size in square meters. Note that even if you use a quadrat with measurements in inches or feet, you need to convert the area to square meters. For example, if your quadrat size is 24 inches by 24 inches (576 square inches) you would enter the value for quad_size_m2 as 0.3716, the size of the quadrat area in square meters. The example data here were collected using a quadrat size of 40 cm x 40 cm, which has an area of 0.16 square meters.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>quad_size_m2 <span class="ot">=</span> <span class="fl">0.16</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>quad_size_m2  <span class="ot">&lt;-</span>  <span class="fl">0.16</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="convert-to-kilogramshectare" class="level3">
 <h3 class="anchored" data-anchor-id="convert-to-kilogramshectare">Convert to kilograms/hectare</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of quadrats of quad_size_cm2 in one hectare. Obtained by dividing the </span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># number of square meters in a hectare by the size (in square meters) of the quadrat:</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>num_quads_ha <span class="ot">=</span> <span class="dv">10000</span><span class="sc">/</span>quad_size_m2</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>num_quads_ha  <span class="ot">&lt;-</span>  <span class="dv">10000</span><span class="sc">/</span>quad_size_m2</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># There are 1000 grams in 1 kilogram. The conversion factor to convert the </span></span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># grams/quadrat value to kg/ha is derived by dividing the number of quadrats/ha </span></span>
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># by 1000 kg/ha:</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>conversion_factor_g_ha <span class="ot">=</span> num_quads_ha<span class="sc">/</span><span class="dv">1000</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>conversion_factor_g_ha  <span class="ot">&lt;-</span>  num_quads_ha<span class="sc">/</span><span class="dv">1000</span></span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>(<span class="at">est_weight_kg_ha =</span> est_weight <span class="sc">*</span> conversion_factor_g_ha)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>(est_weight_kg_ha  <span class="ot">&lt;-</span>  est_weight <span class="sc">*</span> conversion_factor_g_ha)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2307</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">est_CI_kg_ha =</span> est_CI <span class="sc">*</span> conversion_factor_g_ha)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(est_CI_kg_ha  <span class="ot">&lt;-</span>  est_CI <span class="sc">*</span> conversion_factor_g_ha)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 530.1422</code></pre>
 </div>
@@ -3292,23 +3292,23 @@ Note
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of quadrats of quad_size_m2 in one acre. Obtained by dividing the </span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># number of square meters in an acre by the size (in square meters) of the quadrat:</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>num_quads_acre <span class="ot">=</span> <span class="fl">4046.82525</span><span class="sc">/</span>quad_size_m2</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>num_quads_acre  <span class="ot">&lt;-</span>  <span class="fl">4046.82525</span><span class="sc">/</span>quad_size_m2</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># There are 453.59237 grams in 1 pound. </span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>grams_lb <span class="ot">=</span> <span class="fl">453.59237</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>grams_lb  <span class="ot">&lt;-</span>  <span class="fl">453.59237</span></span>
 <span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># The conversion factor to convert the grams/quadrat value to lb/ac is derived by </span></span>
 <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co"># dividing the number of quadrats/acre by the number of grams/pound:</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>conversion_factor_lb_ac <span class="ot">=</span> num_quads_acre<span class="sc">/</span>grams_lb</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>conversion_factor_lb_ac  <span class="ot">&lt;-</span>  num_quads_acre<span class="sc">/</span>grams_lb</span>
 <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co"># We then calculate the estimated weight and confidence interval on a kg/ha basis</span></span>
 <span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co"># by multiplying the estimated weight and confidence interval expressed in grams/quadrat </span></span>
 <span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co"># by the conversion factor:</span></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>(<span class="at">est_weight_lb_ac =</span> est_weight <span class="sc">*</span> conversion_factor_lb_ac)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>(est_weight_lb_ac  <span class="ot">&lt;-</span>  est_weight <span class="sc">*</span> conversion_factor_lb_ac)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2058.241</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">est_CI_lb_ac =</span> est_CI <span class="sc">*</span> conversion_factor_lb_ac)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>(est_CI_lb_ac  <span class="ot">&lt;-</span>  est_CI <span class="sc">*</span> conversion_factor_lb_ac)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 472.9781</code></pre>
 </div>
