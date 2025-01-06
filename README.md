@@ -1,2 +1,14 @@
-# comparative-yield
-Estimation of total above-ground biomass (yield) using the comparative yield method. The analysis using a regression estimator to estimate total yield and confidence intervals around the estimate at a used-defined confidence level. Output shown in an html file in the R files folder.
+# Estimation of total above-ground biomass (yield or standing crop) using the comparative yield method.
+This R markdown document uses the comparative yield method to calculate a regression estimate of yield in grams/quadrat and converts this estimate to kg/ha and lb/acre. It also calculates a confidence interval (at a confidence level specified by the user) for estimates in grams/quadrat, kg/ha, and lb/acre.
+
+The comparative yield method was originally developed by Haydock and Shaw (1975). The R code used here is based on the equations given in Despain et al. (1997).
+
+The comparative yield method is similar to double-sampling techniques that have been used for estimating the biomass of rangelands at least since Pechanec and Pickford (1937). Double sampling is effective when values for the variable of interest are hard or expensive to collect, but values for an auxiliary variable are easier and cheaper to collect. For biomass double sampling, herbage weights in a large sample of quadrats are visually estimated. A relatively small subsample of quadrats from this larger sample of visually estimated quadrats are clipped and weighed. The relationship between the visual estimates and the actual weights of the clipped subsample of quadrats is then used to adjust the estimate for the larger sample of visually estimated quadrats. If there is a good positive relationship between the auxiliary variable (the weight estimates) and the variable of interest (the actual weights), double sampling can greatly increase the precision of the overall estimate. This traditional double-sampling procedure differs from the comparative yield method in two major ways:
+
+1. In the traditional double-sampling method direct estimates of weights are made in each quadrat, as opposed to only having to assign the quadrat to one of five ranks (or intermediates between these ranks) in the comparative yield method.
+
+2. In the traditional double-sampling procedure the subsample of quadrats to be both estimated and clipped is chosen randomly, whereas in the comparative yield method the quadrats to be ranked and clipped are chosen subjectively to provide a set of values for each of the five ranks.
+
+Chapter 4 of Despain et al. (1997), written by Despain and Smith, describes the comparative yield method for estimating range productivity. Two estimators are given, a ratio estimator and a regression estimator. The authors recommend use of the regression estimator to estimate yield and to calculate confidence intervals around the estimate, a view shared by Ahmed et al. (1983), who found that regression estimation provided better results than ratio estimation even when assumptions of homoscedasticity were violated. The regression estimator is used here.
+
+See the html file for the references cited here.
